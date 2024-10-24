@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://img.freepik.com/premium-photo/background-zoom-calls-with-bookcase_1235831-331572.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .portal-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #0ac232;
+            text-align: center;
+        }
+
+        .logout-btn {
+            background-color: #ff4b5c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff3a48;
+        }
+
+        .student-info img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 2px solid #0072ff;
+        }
+
+        .student-info h3 {
+            margin: 10px 0;
+            font-size: 22px;
+            color: #0baae9;
+        }
+
+        .student-info p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #030000;
+        }
+
+        .result-section {
+            background-color: #f3f4f6;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .result-section h4 {
+            margin: 0;
+            color: #0072ff;
+        }
+
+        .result-section p {
+            margin: 5px 0;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+         <!-- Logo Section -->
+         <div class="logo-section">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJQLxvd_RnxC_2doVfarR2SMcYmDLHT04XEA&s" height="160px" alt="Logo" class="logo">
+        </div>
+        <div class="header">
+            <h2> Welcome To DIF Computer Classes Portal</h2><br>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="student-info">
+            <!-- <img id="studentPhoto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9KOi3EID_VYOm18BpZhilKTX2sV7K3EnNKA&s" alt="Student Photo"> -->
+            <h3 id="studentName">Name</h3>
+            <p id="studentClass">Class</p>
+            <p id="studentSection">Section</p>
+        </div>
+
+        <div class="result-section">
+            <h4>Exam Result</h4>
+            <p id="examResult">Exam Result</p>
+        </div>
+
+        <div class="result-section">
+            <h4>Recorded Lectures</h4><br>
+            <!-- <p id="examResult">Exam Result</p> -->
+            <a href="https://www.youtube.com/watch?v=HcOc7P5BMi4">HTML Tutorial</a><br><br>
+            <a href="https://www.youtube.com/watch?v=ESnrn1kAD4E">CSS Tutorial</a><br><br>
+            <a href="https://www.youtube.com/watch?v=VlPiVmYuoqw">Javascript Tutorial</a><br><br>
+            <a href="https://www.youtube.com/watch?v=Ez8F0nW6S-w">Git & Github Tutorial</a><br><br>
+            <a href="https://www.youtube.com/watch?v=fTd4ZMFxNtk">Gitub Pages</a>
+        </div>
+    </div>
+
+    <script>
+         // Check if the user is logged in
+         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'index.html'; // Redirect to login if not logged in
+        }
+
+        // Get student ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentID = urlParams.get('id');
+
+        // Fetch CSV data
+        fetch('students.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n');
+            rows.forEach(row => {
+                const columns = row.split(',');
+                if (columns[0] === studentID) {
+                    document.getElementById('studentName').innerText = columns[1];
+                    document.getElementById('studentClass').innerText = `Class: ${columns[2]}`;
+                    document.getElementById('studentSection').innerText = `Section: ${columns[3]}`;
+                    document.getElementById('examResult').innerText = columns[4];
+                    document.getElementById('studentPhoto').src = columns[5]; // assuming CSV contains image path
+                }
+            });
+        });
+
+          // Logout function
+          function logout() {
+            sessionStorage.removeItem('isLoggedIn'); // Clear login session
+            window.location.href = 'index.html'; // Redirect to login page
+        }
+    </script>
+</body>
+</html>

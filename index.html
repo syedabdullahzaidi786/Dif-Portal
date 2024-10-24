@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJQLxvd_RnxC_2doVfarR2SMcYmDLHT04XEA&s" alt="Logo" class="logo">
+            <h2>Student Login</h2>
+            <form id="loginForm" onsubmit="login(event)">
+                <div class="input-field">
+                    <label for="student-id">
+                        <i class="fas fa-user"></i> Student ID
+                    </label>
+                    <input type="number" id="student-id" name="student_id" required placeholder="Enter your ID">
+                </div>
+                <div class="input-field">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <div class="submit-btn">
+                    <input type="submit" value="Login">
+                </div>
+            </form>
+            <div class="error-message" id="error-message" style="display:none; color:red;">Invalid ID or Password</div>
+        </div>
+    </div>
+
+    <!-- FontAwesome for Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        function login(event) {
+            event.preventDefault(); // prevent form submission
+
+            const studentID = document.getElementById('student-id').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            fetch('students.csv')
+            .then(response => response.text())
+            .then(data => {
+                let loggedIn = false;
+                const rows = data.split('\n');
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns[0] === studentID && columns[6].trim() === password) {
+                        loggedIn = true;
+                        sessionStorage.setItem('isLoggedIn', 'true'); // Set login session
+                        window.location.href = `portal.html?id=${studentID}`; // Redirect to portal
+                    }
+                });
+                if (!loggedIn) {
+                    errorMessage.style.display = 'block'; // Show error message
+                }
+            });
+        }
+    </script>
+</body>
+</html>
